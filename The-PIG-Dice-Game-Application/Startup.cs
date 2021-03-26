@@ -23,7 +23,9 @@ namespace The_PIG_Dice_Game_Application
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddControllersWithViews();
+            services.AddMemoryCache();//add mem cache
+            services.AddSession();//add session
+            services.AddControllersWithViews().AddNewtonsoftJson();//add json
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -43,7 +45,7 @@ namespace The_PIG_Dice_Game_Application
             app.UseStaticFiles();
 
             app.UseRouting();
-
+            app.UseSession();
             app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>

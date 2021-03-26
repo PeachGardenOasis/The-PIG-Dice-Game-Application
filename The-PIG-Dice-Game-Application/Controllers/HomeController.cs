@@ -11,27 +11,56 @@ namespace The_PIG_Dice_Game_Application.Controllers
 {
     public class HomeController : Controller
     {
-        private readonly ILogger<HomeController> _logger;
-
-        public HomeController(ILogger<HomeController> logger)
+        [HttpGet]
+       public IActionResult Index()
         {
-            _logger = logger;
+            var sess = new GameSession(HttpContext.Session);
+            
+            var game = sess.GetGame();
+
+            if (game.IsGameOver)
+            {
+                TempData["message"] = $"{game.CurrentPlayerName} wins!";
+
+            }
+            return View(game);
         }
+        [HttpGet]
 
-        public IActionResult Index()
+        public IActionResult newGame()
         {
-            return View();
+            var sess = new GameSession(HttpContext.Session);
+
+            var game = sess.GetGame();
+
+            game.NewGame();
+            sess.SetGame(game);
+            return RedirectToAction("Index");
+
         }
+        [HttpGet]
 
-        public IActionResult Privacy()
+        public RedirectToActionResult Roll()
         {
-            return View();
+            var sess = new GameSession(HttpContext.Session);
+
+            var game = sess.GetGame();
+
+            game.Roll();
+            sess.SetGame(game);
+            return RedirectToAction("Index");
         }
+        [HttpGet]
 
-        [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
-        public IActionResult Error()
+        public RedirectToActionResult Hold()
         {
-            return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
+            var sess = new GameSession(HttpContext.Session);
+
+            var game = sess.GetGame();
+
+            game.Hold();
+            sess.SetGame(game);
+            return RedirectToAction("Index");
         }
     }
 }
